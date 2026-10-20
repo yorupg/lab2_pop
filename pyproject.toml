@@ -8,6 +8,9 @@ name = "streamstats"
 version = "0.1.0"
 description = "Streaming analysis of CSV and JSONL event files"
 requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.14.1",
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

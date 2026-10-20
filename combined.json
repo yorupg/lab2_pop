@@ -1,0 +1,42 @@
+{
+    "count_event": 4,
+    "level_count": {
+        "ERROR": 1,
+        "WARNING": 1,
+        "INFO": 1,
+        "DEBUG": 0,
+        "CRITICAL": 1
+    },
+    "source_counts": {
+        "server": 2,
+        "client": 1,
+        "database": 1
+    },
+    "level_source_counts": [
+        {
+            "source": "server",
+            "level": "ERROR",
+            "count": 1
+        },
+        {
+            "source": "server",
+            "level": "CRITICAL",
+            "count": 1
+        }
+    ],
+    "top_5_source": [
+        {
+            "source": "server",
+            "level": "CRITICAL",
+            "count": 1
+        },
+        {
+            "source": "server",
+            "level": "ERROR",
+            "count": 1
+        }
+    ],
+    "earliest_timestamp": "2025-01-01T09:00:00",
+    "latest_timestamp": "2025-01-03T11:00:00",
+    "skip_lines": 0
+}

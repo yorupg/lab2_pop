@@ -1,34 +1,19 @@
-from datetime import datetime
-from streamstats.errors import InvalidEventError, InvalidTimestampError
- 
+from typing import Literal
 
-VALID_LEVELS = ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL")
+from pydantic import AwareDatetime, BaseModel, Field, field_validator
 
-class Event:
-    def __init__(self,
-                 timestamp: datetime,
-                 level: str,
-                 source: str,
-                 message: str) -> None :
+
+class Event(BaseModel):
+    '''создаю класс события и проверяю корректность введённых данных'''
         
-        if level not in VALID_LEVELS:
-            raise InvalidEventError("недопустимый уровень события ")
-    
-        if not isinstance(timestamp, datetime):
-            raise InvalidTimestampError("некорректная временная метка")
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    timestamp: AwareDatetime
+    source: str = Field(min_length=1)
+    message: str
         
-        if not isinstance(source, str):
-            raise InvalidEventError("некорректный формат source")
-        temp = source
-        temp = temp.replace(' ', '')
-        
-        if temp == '':
-            raise InvalidEventError("некорректный формат source")
-        
-        if not isinstance(message, str):
-            raise InvalidEventError("некорректный формат message") 
-        
-        self.timestamp = timestamp
-        self.level = level
-        self.source = source
-        self.message = message
+    @field_validator("source")    
+    @classmethod
+    def check_source(cls, source: str) -> str:
+        if source.strip() == "":
+            raise  ValueError("некорректный формат source")
+        return source
