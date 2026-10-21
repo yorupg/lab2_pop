@@ -5,7 +5,11 @@ from collections.abc import Iterator
 
 from pydantic import ValidationError
 
-from streamstats.errors import InvalidEventError, InvalidLineError, InvalidTimestampError
+from streamstats.errors import (
+    InvalidEventError,
+    InvalidLineError,
+    InvalidTimestampError,
+)
 from streamstats.models import Event
 
 
@@ -61,8 +65,33 @@ def parse_jsonl(path: str, skip_lines: dict[str, int] ,skip_invalid: bool = Fals
             
 def parse_csv(path: str, skip_lines: dict[str, int], skip_invalid: bool = False ) -> Iterator[Event]:
     with open(path, encoding="utf-8") as file:
-       reader =  csv.DictReader(file)
-       for data in reader:
+        reader =  csv.DictReader(file)
+       
+        if reader.fieldnames is None:
+           return
+       
+        required = ["timestamp", "level", "source", "message"]
+       
+        for name in required:
+            if name not in reader.fieldnames:
+                 raise InvalidLineError(path, 1, f"нет столбца {name}")        
+       
+        for data in reader:
+            if None in data:
+                reason = "лишние значения"
+                if skip_invalid:
+                    logging.warning(
+                        "пропущена строка %s, файл: %s причина: %s",
+                        reader.line_num,
+                        path,
+                        reason
+                        )
+                    skip_lines["skip_lines"] += 1
+                    continue
+                                
+                raise InvalidLineError( path, reader.line_num, reason) 
+                            
+                
             try:
                 event = validate_event(data)
             except (InvalidEventError, InvalidTimestampError) as error:

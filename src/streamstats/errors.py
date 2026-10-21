@@ -20,4 +20,4 @@ class InvalidLineError(StreamStatsError):
         self.line_number = line_number
         self.reason = reason
         
-        super().__init__(f"{file_path} {line_number} {reason}")
+        super().__init__(f"в файле {file_path} строка {line_number} содержит ошибку: {reason}")

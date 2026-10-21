@@ -4,7 +4,7 @@ from pathlib import Path
 
 import typer
 
-from streamstats.errors import InvalidLineError, UnsupportedFormatError, CLIConfigError
+from streamstats.errors import CLIConfigError, InvalidLineError, UnsupportedFormatError
 from streamstats.parsers import parse_csv, parse_jsonl
 from streamstats.report import report
 
@@ -36,9 +36,9 @@ def main():
 
 @app.command()
 def analyze(file_paths: list[Path],
-            output: Path = typer.Option(Path("REPORT.json"), "--output", help = "путь для сохранения json отчёта"),
+            output: Path = typer.Option(Path("REPORT.json"), "--output", help = "введите путь для сохранения json отчёта"),
             file_formats: list[str] = typer.Option(..., "--format", help = "введите расширение файла [csv|jsonl]"),
-            skip_invalid: bool = typer.Option(False, "--skip-invalid", help = "пропускать неправильные строки")):
+            skip_invalid: bool = typer.Option(False, "--skip-invalid", help = "введите, если хотите пропускать неправильные строки")):
     
     skip_lines = {"skip_lines": 0}
     
@@ -58,6 +58,7 @@ def analyze(file_paths: list[Path],
     except (InvalidLineError, UnsupportedFormatError, CLIConfigError) as error:
         logging.error("%s", error)
         raise typer.Exit(code = 2) from error
+
     
     except FileNotFoundError as error:
         logging.error("не найден файл %s", error.filename)
