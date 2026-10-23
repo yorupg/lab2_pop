@@ -1,4 +1,8 @@
+from streamstats.constants import LEVEL_PRIORITY, TOP_SOURCE_LIMIT
+
+
 def analyze(events):
+    '''анализирую данные каждого полученного события и получаю данные для report.py'''
     count_event = 0
 
     earliest_timestamp = None
@@ -26,7 +30,6 @@ def analyze(events):
             key = (source, event.level)
             level_source_counts[key] = level_source_counts.get(key, 0) + 1
 
-        level_priority = {"CRITICAL": 2, "ERROR": 1}
 
         if count_event == 0:
             earliest_timestamp = event.timestamp
@@ -39,9 +42,9 @@ def analyze(events):
 
     top_5_source = sorted(
         level_source_counts.items(),
-        key=lambda item: (item[1], level_priority[item[0][1]]),
+        key=lambda item: (item[1], LEVEL_PRIORITY),
         reverse=True,
-    )[:5]
+    )[:TOP_SOURCE_LIMIT]
 
     return (
         count_event,

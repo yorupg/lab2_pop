@@ -5,6 +5,7 @@ from collections.abc import Iterator
 
 from pydantic import ValidationError
 
+from streamstats.constants import REQUIRED_FIELDS
 from streamstats.errors import (
     InvalidEventError,
     InvalidLineError,
@@ -12,8 +13,10 @@ from streamstats.errors import (
 )
 from streamstats.models import Event
 
+logger = logging.getLogger(__name__)
 
-def validate_event(data):
+def validate_event(data) -> Event:
+    '''проверяю введенные данные и создаю Event'''
     try:
         return Event.model_validate(data)
 
@@ -28,6 +31,7 @@ def validate_event(data):
 def parse_jsonl(
     path: str, skip_lines: dict[str, int], skip_invalid: bool = False
 ) -> Iterator[Event]:
+    '''выполняю парсинг jsonl файлов'''
     with open(path, encoding="utf-8") as file:
         has_lines = False
         for line_number, line in enumerate(file, start=1):
@@ -35,7 +39,7 @@ def parse_jsonl(
 
             if line.strip() == "":
                 if skip_invalid:
-                    logging.warning(
+                    logger.warning(
                         "пропущена строка %s, файл: %s причина: пустая строка",
                         line_number,
                         path,
@@ -50,7 +54,7 @@ def parse_jsonl(
 
             except json.JSONDecodeError as error:
                 if skip_invalid:
-                    logging.warning(
+                    logger.warning(
                         "пропущена строка %s, файл: %s причина: %s",
                         line_number,
                         path,
@@ -66,7 +70,7 @@ def parse_jsonl(
 
             except (InvalidEventError, InvalidTimestampError) as error:
                 if skip_invalid:
-                    logging.warning(
+                    logger.warning(
                         "пропущена строка %s, файл: %s причина: %s",
                         line_number,
                         path,
@@ -80,7 +84,7 @@ def parse_jsonl(
             yield event
         if not has_lines:
             if skip_invalid:
-                logging.warning("пустой файл: %s", path)
+                logger.warning("пустой файл: %s", path)
                 return
 
             raise InvalidLineError(path, 1, "пустой файл")
@@ -89,19 +93,18 @@ def parse_jsonl(
 def parse_csv(
     path: str, skip_lines: dict[str, int], skip_invalid: bool = False
 ) -> Iterator[Event]:
+    '''выполняю парсинг csv файлов'''
     with open(path, encoding="utf-8") as file:
         reader = csv.DictReader(file)
 
         if reader.fieldnames is None:
             if skip_invalid:
-                logging.warning("пустой файл: %s", path)
+                logger.warning("пустой файл: %s", path)
                 return
 
             raise InvalidLineError(path, 1, "пустой файл")
 
-        required = ["timestamp", "level", "source", "message"]
-
-        for name in required:
+        for name in REQUIRED_FIELDS:
             if name not in reader.fieldnames:
                 raise InvalidLineError(path, 1, f"нет столбца {name}")
 
@@ -109,7 +112,7 @@ def parse_csv(
             if None in data:
                 reason = "лишние значения"
                 if skip_invalid:
-                    logging.warning(
+                    logger.warning(
                         "пропущена строка %s, файл: %s причина: %s",
                         reader.line_num,
                         path,
@@ -124,7 +127,7 @@ def parse_csv(
                 event = validate_event(data)
             except (InvalidEventError, InvalidTimestampError) as error:
                 if skip_invalid:
-                    logging.warning(
+                    logger.warning(
                         "пропущена строка %s, файл: %s причина: %s",
                         reader.line_num,
                         path,

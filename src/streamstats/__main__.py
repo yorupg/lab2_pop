@@ -8,6 +8,8 @@ from streamstats.errors import CLIConfigError, InvalidLineError, UnsupportedForm
 from streamstats.parsers import parse_csv, parse_jsonl
 from streamstats.report import report
 
+logger = logging.getLogger(__name__)
+
 
 def read_events(
     file_paths: list[Path],
@@ -15,6 +17,7 @@ def read_events(
     file_formats: list[str],
     skip_invalid: bool,
 ):
+    '''функция считывает расширение файла, введенное пользователем, и вызывает соответствующий парсер для каждого файла (ошибку, если данный формат не поддерживается)'''
 
     for index, file_path in enumerate(file_paths):
         if len(file_formats) == 1:
@@ -39,8 +42,9 @@ app = typer.Typer()
 
 
 @app.callback()
-def main():
-    pass
+def main() -> None:
+    '''пустая функция тк если задана всего одна analyze то при вводе в терминал, название команды считывается как опция
+    main сохраняет analyze как отдельную команду тайпер'''
 
 
 @app.command()
@@ -57,8 +61,8 @@ def analyze(
         "--skip-invalid",
         help="введите, если хотите пропускать неправильные строки",
     ),
-):
-
+) -> None:
+    '''сохранение проанализированных данных в json отчёт'''
     skip_lines = {"skip_lines": 0}
 
     if len(file_formats) not in (1, len(file_paths)):
@@ -76,16 +80,16 @@ def analyze(
         result = report(events, skip_lines)
 
     except (InvalidLineError, UnsupportedFormatError, CLIConfigError) as error:
-        logging.error("%s", error)
+        logger.error("%s", error)
         raise typer.Exit(code=2) from error
 
     except FileNotFoundError as error:
-        logging.error("не найден файл %s", error.filename)
+        logger.error("не найден файл %s", error.filename)
         raise typer.Exit(code=2) from error
 
     with output.open("w", encoding="utf-8") as file:
         json.dump(result, file, ensure_ascii=False, indent=4)
-    typer.echo(f"Отчёт сохранён: {output}")
+    typer.echo(f"отчёт сохранён: {output}")
 
 
 if __name__ == "__main__":

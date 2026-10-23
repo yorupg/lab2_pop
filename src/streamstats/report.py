@@ -2,6 +2,7 @@ from streamstats.analysis import analyze
 
 
 def report(events, skip_lines):
+    '''составляю текст отчёта'''
     (
         count_event,
         level_counts,

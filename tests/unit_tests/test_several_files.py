@@ -4,7 +4,7 @@ from streamstats.__main__ import read_events
 from streamstats.errors import InvalidLineError
 
 
-def test_some_files_csv_jsonl(tmp_path):
+def test_several_files_csv_jsonl(tmp_path):
     path1 = tmp_path / "file1.jsonl"
     path2 = tmp_path / "file2.csv"
 
@@ -38,7 +38,7 @@ def test_some_files_csv_jsonl(tmp_path):
     assert result[1].level == "ERROR"
 
 
-def test_some_files_jsonl(tmp_path):
+def test_several_files_jsonl(tmp_path):
     path1 = tmp_path / "file_jsonl1.jsonl"
     path2 = tmp_path / "file_jsonl2.jsonl"
 
@@ -71,7 +71,7 @@ def test_some_files_jsonl(tmp_path):
     assert result[1].message == "second"
 
 
-def test_some_files_csv(tmp_path):
+def test_several_files_csv(tmp_path):
     path1 = tmp_path / "file_csv1.csv"
     path2 = tmp_path / "file_csv2.csv"
 
@@ -106,7 +106,7 @@ def test_some_files_csv(tmp_path):
     assert result[1].source == "auth2"
 
 
-def test_some_files_incorrect_second(tmp_path):
+def test_several_files_incorrect_second(tmp_path):
     path1 = tmp_path / "first_correct.jsonl"
     path2 = tmp_path / "second_incorrect.jsonl"
 
@@ -132,7 +132,7 @@ def test_some_files_incorrect_second(tmp_path):
     assert skip_lines["skip_lines"] == 0
 
 
-def test_some_files_incorrect_second_skip_invalid(tmp_path, caplog):
+def test_several_files_incorrect_second_skip_invalid(tmp_path, caplog):
     path1 = tmp_path / "first_correct.jsonl"
     path2 = tmp_path / "second_incorrect.jsonl"
 
@@ -169,7 +169,7 @@ def test_some_files_incorrect_second_skip_invalid(tmp_path, caplog):
     assert str(path2) in caplog.text
 
 
-def test_some_files_empty_first_skip_invalid(tmp_path, caplog):
+def test_several_files_empty_first_skip_invalid(tmp_path, caplog):
     path1 = tmp_path / "first_empty.jsonl"
     path2 = tmp_path / "second_correct.csv"
 
@@ -194,7 +194,7 @@ def test_some_files_empty_first_skip_invalid(tmp_path, caplog):
     assert str(path1) in caplog.text
 
 
-def test_some_files_incorrect_first_and_second_skip_invalid(tmp_path, caplog):
+def test_several_files_incorrect_first_and_second_skip_invalid(tmp_path, caplog):
     path1 = tmp_path / "first_incorrect.jsonl"
     path2 = tmp_path / "second_incorrect.csv"
 
@@ -230,7 +230,7 @@ def test_some_files_incorrect_first_and_second_skip_invalid(tmp_path, caplog):
     assert "пропущена строка 2" in caplog.text
 
 
-def test_some_files_one_format(tmp_path):
+def test_several_files_one_format(tmp_path):
     path1 = tmp_path / "file1.csv"
     path2 = tmp_path / "file2.csv"
 

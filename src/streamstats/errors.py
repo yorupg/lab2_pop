@@ -19,7 +19,7 @@ class CLIConfigError(StreamStatsError):
 
 
 class InvalidLineError(StreamStatsError):
-    def __init__(self, file_path: str, line_number: int, reason: str):
+    def __init__(self, file_path: str, line_number: int, reason: str) -> None :
 
         self.file_path = file_path
         self.line_number = line_number

@@ -14,6 +14,7 @@ class Event(BaseModel):
     @field_validator("source")
     @classmethod
     def check_source(cls, source: str) -> str:
+        '''проверяю, что источник не пустая строка (не состоит только из пробельных символов)'''
         if source.strip() == "":
             raise ValueError("некорректный формат source")
         return source
