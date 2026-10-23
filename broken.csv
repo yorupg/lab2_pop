@@ -1,4 +1,0 @@
-timestamp,level,source,message
-2025-01-01T09:00:00,ERROR,server,Good event
-THIS IS NOT A VALID EVENT
-2025-01-01T09:02:00,INFO,client,Another good event

@@ -1,3 +1,0 @@
-{"timestamp":"2025-01-01T09:00:00+03:00","level":"INFO","source":"auth","message":"Login"}
-{"timestamp":"wrong-date","level":"ERROR","source":"auth","message":"Failed"}
-{"timestamp":"2025-01-01T09:10:00+03:00","level":"CRITICAL","source":"database","message":"Failure"}

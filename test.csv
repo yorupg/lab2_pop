@@ -1,7 +1,0 @@
-timestamp,level,source,message
-2025-01-01T09:00:00+03:00,INFO,auth,User logged in
-2025-01-01T09:05:00+03:00,ERROR,auth,Login failed
-2025-01-01T09:10:00+03:00,CRITICAL,database,Database unavailable
-2025-01-01T09:15:00+03:00,WARNING,server,High memory usage
-2025-01-01T09:20:00+03:00,DEBUG,server,Checking status
-2025-01-01T09:25:00+03:00,ERROR,database,Connection timeout
