@@ -16,7 +16,7 @@ from streamstats.models import Event
 logger = logging.getLogger(__name__)
 
 def validate_event(data) -> Event:
-    '''проверяю введенные данные и создаю Event'''
+    '''проверяю введенные данные и создаю event'''
     try:
         return Event.model_validate(data)
 
